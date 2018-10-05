@@ -22,9 +22,74 @@ body {
 }
 
 button, strong {
+    height: 36px;
+    min-width: 64px;
+    font-size: 14px;
+    border-radius: 0px;
+    padding: 0px 16px;
+    margin: 8px;
+    background-color: white;
     text-transform: uppercase;
+    border: none;
 }
 
+button:hover {
+    background-color: #d9d9d9;
+}
+
+.primary {
+    background-color: #3F51B5;
+    color: white;
+}
+
+.primary:hover {
+    background-color: #192b5f;
+}
+.accent {
+    background-color: #CDDC39;
+    color: black;
+}
+
+.accent:hover{
+    background-color: #A7B613;
+}
+
+button:focus, input:focus{
+    outline:0;
+}
+
+
+/** Shadows:
+  *
+  * Credit to Scott Roe for figuring this out
+  */
+.shadow--2dp {
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+}
+
+.shadow--3dp {
+    box-shadow: 0 3px 4px 0 rgba(0, 0, 0, 0.14), 0 3px 3px -2px rgba(0, 0, 0, 0.2), 0 1px 8px 0 rgba(0, 0, 0, 0.12);
+}
+
+.shadow--4dp {
+    box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+}
+
+.shadow--6dp {
+    box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12), 0 3px 5px -1px rgba(0, 0, 0, 0.2);
+}
+
+.shadow--8dp {
+    box-shadow: 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12), 0 5px 5px -3px rgba(0, 0, 0, 0.2);
+}
+
+.shadow--16dp {
+    box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14), 0 6px 30px 5px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.2);
+}
+
+.shadow--24dp {
+    box-shadow: 0 9px 46px 8px rgba(0, 0, 0, 0.14), 0 11px 15px -7px rgba(0, 0, 0, 0.12), 0 24px 38px 3px rgba(0, 0, 0, 0.2);
+}
 /* LAYOUT */
 
 #channels {
@@ -53,9 +118,6 @@ button, strong {
 /* APP BAR */
 
 h1 {
-    background-color: #3F51B5;
-    color: white;
-
     /* app-bar: general settings for both bars */
     height: 64px;
     font-size: 20px;
@@ -71,6 +133,7 @@ h1 {
 
 h1#left-app-bar {
     padding-left: 72px;
+    z-index: 1;
 }
 
 h1#left-app-bar img {
@@ -99,11 +162,12 @@ ul {
     position: absolute;
     width: 100%;
     top: 64px; /* the app bar's height */
-    bottom: 72px; /* the tab bar's height */
+    bottom: 44px; /* the tab bar's height */
     overflow-y: auto; /* this adds scroll bars on demand */
 }
 
 li {
+    z-index: 1;
     box-sizing: border-box;
     height: 48px;
     padding: 16px;
@@ -124,9 +188,9 @@ li .channel-meta {
 
 li .channel-meta span {
     /* #8 #channel #boxes for the additional metadata */
-    /* color */
+    /* color 
     background-color: #3F51B5;
-    color: white;
+    color: white;*/
     /* appearance */
     margin: 2px;
     padding: 2px;
@@ -149,6 +213,18 @@ li.selected {
     border-left: 4px solid #3F51B5;
 }
 
+.dot{
+    height: 64px;
+    width: 64px;
+    border-radius: 50%;
+    display: inline-block;
+    position: absolute;
+    bottom: 52px;
+    right: 16px;
+    box-shadow: 0 12px 17px 1px rgba(0, 0, 0, 0.14)
+   
+}
+
 /* TAB BAR */
 
 #tab-bar, #chat-bar {
@@ -158,18 +234,25 @@ li.selected {
     bottom: 0;
     width: 100%;
     display: flex;
+
 }
 
 #tab-bar button, #chat-bar button {
-    background-color: white;
+    /*background-color: white;
+    color: black;*/
     border: none;
-    font-size: 13px;
+    margin-bottom: 0px;
+    /*font-size: 13px;*/
     width: 33%;
-    height: 72px;
-    padding: 16px;
+    /*height: 72px;
+    padding: 16px;*/
 
     /* flexify the buttons by growing them equally */
     flex-grow: 1;
+}
+
+#tab-bar button {
+    color: black;
 }
 
 #tab-bar button.selected {
@@ -180,11 +263,38 @@ li.selected {
 #tab-bar button i {
     /* #7 #icns #tab select i instead of img and adjust font size */
     display: block;
-    font-size: 24px;
-    margin: 0 auto 4px auto;
+    /*font-size: 24px;
+    margin: 0 auto 4px auto;*/
 }
 
 /* CHAT BAR */
+
+/* #10 new channel input bar*/
+#new-channel-app-bar {
+    display: none;
+    padding: none;
+}
+
+#new-channel-app-bar button {
+    position: absolute;
+    right:0px;
+    bottom: 4px;
+    text-transform: none;
+    flex-grow: 1;
+    border:none;
+}
+
+#new-channel-name{
+    position: absolute;
+    bottom: 12px;
+    width: calc(100% - 92px);
+    font-size: 16px;
+    border: none;
+    flex-grow: 1;
+    height: 36px;
+}
+
+
 
 #chat-bar button {
     /* override button styles. We set the chat bar to appear like a tab-bar above. This overrides the tab bar's button scaling */
@@ -192,14 +302,14 @@ li.selected {
     flex-grow: 0;
 
     /* #7 #icns #smile adjust fa size */
-    font-size: 24px;
+    /*font-size: 24px;*/
 }
 
 #emojis {
     /* emoji menu */
     /* colors and borders */
     background-color:white;
-    border: 1px solid black;
+    
 
     /* size & alignment */
     position: absolute;
@@ -252,8 +362,11 @@ li.selected {
 .message h3 a {
     /* What3words link is primary test */
     color: black;
-
     width: 30%;
+}
+
+.message h3 strong{
+    padding: 0px;
 }
 
 .message h3 em {
@@ -266,22 +379,66 @@ li.selected {
 }
 
 .message p {
+    box-shadow: 2px 2px rgba(0,0,0,0.1);
     background-color: white;
     padding: 16px;
+
 }
+
+message p::before {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 0;
+        border-top: 20px solid transparent;
+        border-bottom: 20px solid transparent;
+        border-right: 20px solid white;
+        margin-left: -30px;
+        margin-top: -30px;
+        filter: drop-shadow(-2px 1px 1px rgba(0,0,0,.3));
+       }
 
 .message button {
     /* +5 min. button*/
-    background-color: #CDDC39;
+    /*background-color: #CDDC39;
     color: black;
-    text-transform: uppercase;
+    text-transform: uppercase;*/
 
     /* right/bottom alignment of button */
     position: absolute;
     right: 8px;
     bottom: 8px;
+    top: 20px;
+}
+
+#create-button {
+    display: none;
 }
 
 .message.own {
-    margin-left: 17.5%;
+    margin-left: calc(20%-20px);
+}
+
+.message.own::before {
+        width: 0;
+        height: 0;
+        border-left: 20px solid transparent;
+        border-top: 20px solid white;
+        position: absolute;
+        content: "";
+        top: 25px;
+        left: -20px;
+        filter: drop-shadow(-2px 1px 1px rgba(0,0,0,.3));
+}
+
+.message.own::after {
+    width: 0;
+    height: 0;
+    border-right: 20px solid transparent;
+    border-top: 20px solid white;
+    position: absolute;
+    content: "";
+    top: 25px;
+    right: -20px;
+    filter: drop-shadow(2px 1px 1px rgba(0,0,0,.3));
 }

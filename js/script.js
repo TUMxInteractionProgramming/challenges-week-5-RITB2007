@@ -11,9 +11,9 @@ currentChannel = sevencontinents;
 /** Store my current (sender) location
  */
 var currentLocation = {
-    latitude: 48.249586,
-    longitude: 11.634431,
-    what3words: "shelf.jetted.purple"
+    latitude: 51.484441, 
+    longitude: 4.454181,
+    what3words: "lakwerk.peetoom.getoond"
 };
 
 /**
@@ -50,6 +50,27 @@ function switchChannel(channelObject) {
     currentChannel = channelObject;
 }
 
+function addNewChannel() {
+    //#10  clear all messages #clear
+    $('#messages').empty();
+    //#10  input new channels name #name
+    $('#messages-app-bar').hide();
+    $('#new-channel-app-bar').show();
+    //#10 change send button ceate button
+    $('#send-button').hide();
+    $('#create-button').show();
+}
+
+function abortCreateChannel() {
+    //#10  cose the new channels name app bar
+    //#10  open messages app bar
+    $('#new-channel-app-bar').hide();
+    $('#messages-app-bar').show();
+    //#10 change create button send button
+    $('#create-button').hide();
+    $('#send-button').show();
+}
+
 /* liking a channel on #click */
 function star() {
     // Toggling star
@@ -80,6 +101,14 @@ function selectTab(tabId) {
  */
 function toggleEmojis() {
     $('#emojis').toggle(); // #toggle
+    loadEmojis(); // load emojis onclick
+}
+
+
+//* #10 more #suitable way to load emojis, can be used in body onload
+function loadEmojis() {
+    var emojis = require('emojis-list');
+    $('#emojis').html(emojis);
 }
 
 /**
@@ -109,8 +138,15 @@ function sendMessage() {
     var message = new Message($('#message').val());
     console.log("New message:", message);
 
+    // #10 Don't send empty message
+    if (message.text.length > 0 ) {
+
     // #8 convenient message append with jQuery:
     $('#messages').append(createMessageElement(message));
+    // #10 the message into the channel array #push
+    currentChannel.messages.push(createMessageElement(message));
+    // #10 increas the message count #increase
+    currentChannel.messageCount = currentChannel.messageCount + 1;
 
     // #8 messages will scroll to a certain point if we apply a certain height, in this case the overall scrollHeight of the messages-div that increases with every message;
     // it would also scroll to the bottom when using a very high number (e.g. 1000000000);
@@ -118,6 +154,9 @@ function sendMessage() {
 
     // #8 clear the message input
     $('#message').val('');
+
+    }
+    else alert ("You have nothing to send!")
 }
 
 /**
@@ -140,22 +179,60 @@ function createMessageElement(messageObject) {
         messageObject.createdOn.toLocaleString() +
         '<em>' + expiresIn+ ' min. left</em></h3>' +
         '<p>' + messageObject.text + '</p>' +
-        '<button>+5 min.</button>' +
+        '<button class="accent">+5 min.</button>' +
         '</div>';
 }
 
 
-function listChannels() {
+function listChannels(criterion) {
     // #8 channel onload
     //$('#channels ul').append("<li>New Channel</li>")
-
+/*
     // #8 five new channels
     $('#channels ul').append(createChannelElement(yummy));
     $('#channels ul').append(createChannelElement(sevencontinents));
     $('#channels ul').append(createChannelElement(killerapp));
     $('#channels ul').append(createChannelElement(firstpersononmars));
     $('#channels ul').append(createChannelElement(octoberfest));
+    */
+
+    // #10 sort the channel array
+    if (criterion == "new") {
+        channels.sort(compareNew);
+    } else if (criterion == "trending") {
+        channels.sort(compareTrending);
+    } else if (criterion == "favorites") {
+        channels.sort(compareFavorites);
+    } 
+
+    // #10 list channels #for
+    var i;
+    $('#channels ul').empty();
+    for (i=0;i<channels.length;i++) {
+        $('#channels ul').append(createChannelElement(channels[i]));
+    }
 }
+    
+
+// #10 create three comare functions #compare
+
+// compare base on creation time
+function compareNew (a, b) {
+    var dateA=new Date(a.createdOn), dateB=new Date(b.createdOn)
+        return dateB-dateA
+    }
+
+// compare base on message count
+function compareTrending (c,d) {
+    return d.messageCount > c.messageCount ? 1 : c.messageCount > d.messageCount ? -1 : 0;
+    }
+
+// compare base on stars
+function compareFavorites (e,f){
+    return (e.starred===f.starred) ? 0 : e.starred? -1 : 1;
+}
+
+   
 
 /**
  * #8 This function makes a new jQuery #channel <li> element out of a given object
@@ -184,8 +261,8 @@ function createChannelElement(channelObject) {
     $('<i>').addClass('fa-star').addClass(channelObject.starred ? 'fas' : 'far').appendTo(meta);
 
     // #8 channel boxes for some additional meta data
-    $('<span>').text(channelObject.expiresIn + ' min').appendTo(meta);
-    $('<span>').text(channelObject.messageCount + ' new').appendTo(meta);
+    $('<span class="primary">').text(channelObject.expiresIn + ' min').appendTo(meta);
+    $('<span class="primary">').text(channelObject.messageCount + ' new').appendTo(meta);
 
     // The chevron
     $('<i>').addClass('fas').addClass('fa-chevron-right').appendTo(meta);
@@ -193,3 +270,49 @@ function createChannelElement(channelObject) {
     // return the complete channel
     return channel;
 }
+
+    // #10 constructor function for a channel
+    function Channel(text) {
+        this.name = text;
+        this.createdOn = new Date(); //now
+        this.createdBy = currentLocation.what3words;
+        this.starred = false;
+        this.expiresIn = 100; //arbitrary number for now
+        this.messageCount = 0;
+        this.messages = [];
+    };
+
+function createChannel() {
+     // build the channel object
+    var channel = new Channel($('#new-channel-name').val())
+
+    var message = new Message($('#message').val());
+    
+    // #10 check mesages validation before sending
+    if (channel.name.length == 0) {
+        alert("Enter channel name starting with #");
+        } 
+        else if (channel.name[0] != '#') {
+        alert("Your channel name must start with #");
+        }
+        else if (channel.name.indexOf(' ') >= 0 ){
+        alert("Your channel contains spaces"); 
+        }
+        else {
+        // make the channel the current one
+        currentChannel = channel;
+        // add the channel to the channels array
+        channels.push(currentChannel);
+        // send the message
+        sendMessage();
+        // reset the app bars and buttons
+        abortCreateChannel();
+        // refresh the channel list
+        listChannels(compareNew);
+        // refrest the top-right-app bar with the new channel
+        switchChannel(currentChannel);
+
+       }
+    }
+
+
